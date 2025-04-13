@@ -5,13 +5,27 @@ import (
 	"net/http"
 
 	"soft.exe/sruc/config"
+	"soft.exe/sruc/core/controller"
+	"soft.exe/sruc/core/service"
 )
 
 func main() {
 	config.ShowBanner()
 	cfg := config.LoadApiConfig()
-	config.ConnectToDatabase(cfg)
+	db := config.ConnectToDatabase(cfg)
 	router := config.NewRouter()
+
+	router.RegisterResources("/img/")
+	router.RegisterResources("/css/")
+	router.RegisterResources("/js/")
+
+	svc := service.NewUsuarioService(db)
+
+	router.RegisterControllers(
+		controller.NewUsuarioController(svc),
+		controller.NewLoginController(svc),
+		controller.NewHomeController(),
+	)
 
 	log.Println("El servidor inicio correctamente")
 	log.Printf("Escuchando en el puerto %s...", *cfg.Addr)
