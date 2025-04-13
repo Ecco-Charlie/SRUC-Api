@@ -12,18 +12,23 @@ type RestMiddleware = func(*http.HandlerFunc) *http.HandlerFunc
 type PageMiddleware = func(*PageHandle) *PageHandle
 
 type Router struct {
-	Mux *http.ServeMux
+	Mux       *http.ServeMux
 	templates *template.Template
 }
 
 func NewRouter() *Router {
 	return &Router{
-		Mux: http.NewServeMux(),
+		Mux:       http.NewServeMux(),
 		templates: template.Must(template.ParseGlob("resources/template/**")),
 	}
 }
 
-func (router *Router) RegisterControllers(controllers ... Controller) {
+func (router *Router) RegisterResources(path string) {
+	fs := http.FileServer(http.Dir("resources/static/" + path))
+	router.Mux.Handle(path, http.StripPrefix(path, fs))
+}
+
+func (router *Router) RegisterControllers(controllers ...Controller) {
 	for _, controller := range controllers {
 		controller.RegisterEndpoints(router)
 	}
@@ -38,7 +43,7 @@ func (router *Router) GetMapping(path string, handle http.HandlerFunc, middlewar
 			pkg.MethodNotAllowed(w, r.Host)
 			return
 		}
-		handle(w,r)
+		handle(w, r)
 	})
 }
 
@@ -51,7 +56,7 @@ func (router *Router) PostMapping(path string, handle http.HandlerFunc, middlewa
 			pkg.MethodNotAllowed(w, r.Host)
 			return
 		}
-		handle(w,r)
+		handle(w, r)
 	})
 }
 
@@ -60,7 +65,7 @@ func (router *Router) HtmlMapping(path string, handle PageHandle, middlewares ..
 		handle = *mw(&handle)
 	}
 	router.Mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		t, d := handle(w,r)
-		router.templates.ExecuteTemplate(w,t,d)
+		t, d := handle(w, r)
+		router.templates.ExecuteTemplate(w, t, d)
 	})
 }
