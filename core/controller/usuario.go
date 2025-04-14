@@ -27,7 +27,7 @@ func (uc *UsuarioController) login(w http.ResponseWriter, r *http.Request) (stri
 	}
 	usuario, err := uc.service.Login(ldto)
 	if err == nil {
-		pkg.WriteSessionKey(w, usuario.NumCuenta)
+		pkg.WriteSessionKey(w, &usuario.NumCuenta, &usuario.Nombre)
 		w.Header().Set("HX-Redirect", "/")
 		w.WriteHeader(http.StatusOK)
 		return "", nil

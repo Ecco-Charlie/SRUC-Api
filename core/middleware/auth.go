@@ -13,7 +13,7 @@ func AlrredyAuth(next config.PageHandle) config.PageHandle {
 		if err != nil {
 			return next(w, r)
 		}
-		err = pkg.ValidateJwt(&jwt.Value)
+		_, err = pkg.ValidateJwt(&jwt.Value)
 		if err == nil {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return "", nil
@@ -29,11 +29,15 @@ func AuthSessionKeyMiddleware(next config.PageHandle) config.PageHandle {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return "", nil
 		}
-		err = pkg.ValidateJwt(&jwt.Value)
+		ud, err := pkg.ValidateJwt(&jwt.Value)
 		if err != nil {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return "", nil
 		}
-		return next(w, r)
+		p, pd := next(w, r)
+		if d, ok := pd.(*config.PageData); ok {
+			d.Nombre = ud.Nombre
+		}
+		return p, pd
 	}
 }

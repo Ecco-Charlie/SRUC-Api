@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func WriteSessionKey(w http.ResponseWriter, NumCuenta uint) error {
-	token, err := GenerateJwt(NumCuenta)
+func WriteSessionKey(w http.ResponseWriter, NumCuenta *uint, Nombre *string) error {
+	token, err := GenerateJwt(NumCuenta, Nombre)
 	if err != nil {
 		fmt.Println(err)
 		return err

@@ -1,5 +1,7 @@
 package entity
 
+import "github.com/golang-jwt/jwt/v5"
+
 type Usuario struct {
 	NumCuenta    uint    `gorm:"primaryKey"`
 	Nombre       string  `gorm:"size:20"`
@@ -29,4 +31,10 @@ type Acceso struct {
 type LoginDto struct {
 	NumCuenta string
 	Password  string
+}
+
+type UserData struct {
+	NumCuenta uint   `json:"numcuenta"`
+	Nombre    string `json:"nombre"`
+	jwt.RegisteredClaims
 }

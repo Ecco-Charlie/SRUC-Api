@@ -14,9 +14,14 @@ func NewHomeController() *HomeController {
 }
 
 func (hc *HomeController) index(w http.ResponseWriter, r *http.Request) (string, any) {
-	return "home", nil
+	return "home", &config.PageData{Path: "Dashboard"}
+}
+
+func (hc *HomeController) redirect(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }
 
 func (hc *HomeController) RegisterEndpoints(router *config.Router) {
-	router.HtmlMapping("/", hc.index, middleware.AuthSessionKeyMiddleware)
+	router.HtmlMapping("/dashboard", hc.index, middleware.AuthSessionKeyMiddleware)
+	router.GetMapping("/", hc.redirect)
 }
