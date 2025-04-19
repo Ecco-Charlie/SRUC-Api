@@ -36,9 +36,14 @@ func (ur *UsuarioRespository) CountAll(params *url.Values, cantidad *int64) (*go
 		}
 	}
 
+	if params.Get("search") != "" {
+		query = query.Where(params.Get("type")+" LIKE ?", "%"+params.Get("search")+"%")
+	}
+
 	if err := query.Count(cantidad).Error; err != nil {
 		return nil, err
 	}
+
 	return query, nil
 }
 
@@ -49,6 +54,14 @@ func (ur *UsuarioRespository) All(query *gorm.DB, page int64) (*[]entity.Usuario
 		return nil, err
 	}
 	return usuarios, nil
+}
+
+func (ur *UsuarioRespository) FindByNumCuentaAndRol(NumCuenta uint, rol string) (*entity.Usuario, error) {
+	var usuario *entity.Usuario
+	if err := ur.db.Preload("Administrativo").Preload("Alumno").First(&usuario, NumCuenta).Error; err != nil {
+		return nil, err
+	}
+	return usuario, nil
 }
 
 func (ur *UsuarioRespository) MigrateDataModels() {

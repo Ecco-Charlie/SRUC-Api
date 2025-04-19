@@ -8,6 +8,9 @@ type Usuario struct {
 	ApellPaterno string  `gorm:"size:20"`
 	ApellMaterno *string `gorm:"size:20"`
 	Rol          string  `gorm:"type:enum('administrativo','alumno','invitado')"`
+
+	Administrativo *Administrativo
+	Alumno         *Alumno
 }
 
 type Alumno struct {

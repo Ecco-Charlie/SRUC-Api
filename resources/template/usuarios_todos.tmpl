@@ -13,8 +13,8 @@
 				<option value="apell_paterno">Apellido Paterno</option>
 				<option value="apell_materno">Apellido Materno</option>
 			</select>
-			<input type="text" class="form-control" id="search" placeholder="Buscar usuario por..." aria-label="Buscar usuario por...">
-			<button class="btn btn-outline-success">Buscar</button>
+			<input type="text" class="form-control" name="search" id="search" placeholder="Buscar usuario por..." aria-label="Buscar usuario por...">
+			<button class="btn btn-outline-success" type="button" hx-trigger="click">Buscar</button>
 		</div>
 		<div class="input-group">
 			<label for="er" class="input-group-text">Solo rol...</label>
@@ -64,13 +64,110 @@
 				<td>{{ .ApellMaterno }}</td>
 				<td>{{ .Rol }}</td>
 				<td>
-					<button class="btn btn-warning" type="button" name="num_cuenta" value="{{ .NumCuenta }}">Editar</button>
-					<button class="btn btn-danger" type="button" name="num_cuenta" value="{{ .NumCuenta }}" >Eliminar</button></td>
+					<button class="btn btn-warning" type="button" name="u_data" value="{{ .NumCuenta }},{{ .Rol }}" 
+						data-bs-toggle="modal" data-bs-target="#editModal"
+						hx-post="/api/usuarios/editar" hx-trigger="click" hx-target="#m_edit">Editar</button>
+					<button class="btn btn-danger" type="button" name="num_cuenta" value="{{ .NumCuenta }}">Eliminar</button></td>
 			</tr>
 		{{ end }}
 	</tbody>
 </table>
 
 {{ template "paginador" . }}
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Editar el usuario</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="m_edit">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ end }}
+
+
+
+<!-- Editar -->
+{{ define "u_edit_g" }}
+
+<form class="d-flex gap-3 flex-column">
+
+	<div class="input-group">
+		<label for="num_cuenta" class="input-group-text">Numero de cuenta</label>
+		<input type="text" class="form-control" id="num_cuenta" name="num_cuenta" value="{{ .NumCuenta }}">
+	</div>
+
+	<div class="input-group">
+		<label for="nombre" class="input-group-text">Nombre</label>
+		<input type="text" class="form-control" id="nombre" name="nombre" value="{{ .Nombre }}">
+	</div>
+
+	<div class="input-group">
+		<label for="apell_paterno" class="input-group-text">Apellido Paterno</label>
+		<input type="text" class="form-control" name="apellpaterno" id="apell_paterno" value="{{ .ApellPaterno }}">
+	</div>
+
+	<div class="input-group">
+		<label for="apell_materno" class="input-group-text">Apellido Materno</label>
+		<input type="text" class="form-control" name="apellmaterno" id="apell_materno" value="{{ .ApellMaterno }}">
+	</div>
+
+	<div class="input-group">
+		<label for="rol" class="input-group-text">Rol</label>
+
+		{{ $adm := "administrativo" }}
+		{{ $alu := "alumno" }}
+		{{ $inv := "invitado" }}
+
+		<select name="rol" id="rol" class="form-select">
+			<option value="{{ $adm }}" {{ if eq .Rol $adm }}selected{{ end }}>Administrativo</option>
+			<option value="{{ $alu }}" {{ if eq .Rol $alu }}selected{{ end }}>Alumno</option>
+			<option value="{{ $inv }}" {{ if eq .Rol $inv }}selected{{ end }}>Invitado</option>
+		</select>
+	</div>
+	
+	{{ if eq .Rol $adm }}
+		{{ template "ud_adm" . }}
+	{{ else if eq .Rol $alu }}
+		{{ template "ud_alu" . }}
+	{{ end }}
+
+</form>
+
+{{ end }}
+
+
+
+<!-- Administrativo -->
+
+{{ define "ud_adm" }}
+
+<div class="input-group">
+	<label for="area" class="input-group-text">Area</label>
+	<input type="text" class="form-control" name="area" value="{{ .Administrativo.Area }}">
+</div>
+
+{{ end }}
+
+
+
+
+<!-- Alumno -->
+{{ define "ud_alu" }}
+
+<div class="input-group">
+	<label for="licenciatura" class="input-group-text">Licenciatura</label>
+	<input type="text" class="form-control" name="licenciatura" value="{{ .Alumno.Licenciatura }}">
+</div>
 
 {{ end }}

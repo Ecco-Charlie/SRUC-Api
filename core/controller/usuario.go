@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"soft.exe/sruc/config"
 	"soft.exe/sruc/core/entity"
@@ -50,8 +51,18 @@ func (uc *UsuarioController) apiTodos(w http.ResponseWriter, r *http.Request) (s
 	}
 }
 
+func (uc *UsuarioController) apiEditar(w http.ResponseWriter, r *http.Request) (string, any) {
+	ud := strings.Split(r.PostFormValue("u_data"), ",")
+	usuario, err := uc.service.FindByNumCuentaAndRol(&ud[0], &ud[1])
+	if err != nil {
+		return "message", &config.Error{Message: err.Error()}
+	}
+	return "u_edit_g", usuario
+}
+
 func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/api/login", uc.login)
 	router.HtmlMapping("/usuarios/todos", uc.todos, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/usuarios/todos", uc.apiTodos, middleware.AuthSessionKeyMiddleware)
+	router.HtmlMapping("/api/usuarios/editar", uc.apiEditar, middleware.AuthSessionKeyMiddleware)
 }

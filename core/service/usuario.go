@@ -63,3 +63,11 @@ func (us *UsuarioService) All(params *url.Values) (*[]entity.Usuario, *config.Pa
 		Paginas:  paginator,
 	}, nil
 }
+
+func (us *UsuarioService) FindByNumCuentaAndRol(NumCuenta *string, rol *string) (*entity.Usuario, error) {
+	nc, err := strconv.Atoi(*NumCuenta)
+	if err != nil {
+		return nil, err
+	}
+	return us.repository.FindByNumCuentaAndRol(uint(nc), *rol+"s")
+}
