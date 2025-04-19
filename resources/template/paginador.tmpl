@@ -1,0 +1,27 @@
+{{ define "paginador" }}
+
+<nav>
+  <ul class="pagination">
+    <li class="page-item">
+      <button class="page-link" aria-label="Previous" name="pp" hx-post="/api/usuarios/todos" hx-trigger="click" hx-target="#usuarios">
+        <span aria-hidden="true">&laquo;</span>
+      </button>
+    </li>
+		{{ $c := .Paginador.Actual }}
+		{{ range .Paginador.Paginas }}
+			<li class="page-item">
+				<label class="page-link {{ if eq $c . }}active{{ end }}">
+					{{ . }} 
+					<input class="d-none" {{ if eq $c . }}checked{{ end }} type="radio" name="p" value="{{ . }}"> 
+				</label>
+			</li>
+		{{ end }}
+    <li class="page-item">
+      <button class="page-link" aria-label="Next" name="pn" hx-post="/api/usuarios/todos" hx-trigger="click" hx-target="#usuarios">
+        <span aria-hidden="true">&raquo;</span>
+      </button>
+    </li>
+  </ul>
+</nav>
+
+{{ end }}

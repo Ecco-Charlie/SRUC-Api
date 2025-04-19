@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"net/url"
+
 	"gorm.io/gorm"
 	"soft.exe/sruc/core/entity"
 	"soft.exe/sruc/pkg"
@@ -22,6 +24,31 @@ func (ur *UsuarioRespository) FindAccesoByNumCuenta(NumCuenta uint) (*entity.Acc
 		return nil, pkg.ErrUserNotFound
 	}
 	return acceso, nil
+}
+
+func (ur *UsuarioRespository) CountAll(params *url.Values, cantidad *int64) (*gorm.DB, error) {
+	query := ur.db.Model(&entity.Usuario{})
+
+	if params.Has("er") {
+		er := params.Get("er")
+		if er != "all" {
+			query = query.Where("rol = ?", er)
+		}
+	}
+
+	if err := query.Count(cantidad).Error; err != nil {
+		return nil, err
+	}
+	return query, nil
+}
+
+func (ur *UsuarioRespository) All(query *gorm.DB, page int64) (*[]entity.Usuario, error) {
+	var usuarios *[]entity.Usuario
+	offset := int((page - 1) * 11)
+	if err := query.Limit(11).Offset(offset).Find(&usuarios).Error; err != nil {
+		return nil, err
+	}
+	return usuarios, nil
 }
 
 func (ur *UsuarioRespository) MigrateDataModels() {

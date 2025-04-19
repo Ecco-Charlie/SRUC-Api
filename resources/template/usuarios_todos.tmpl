@@ -1,0 +1,76 @@
+<!-- Index -->
+
+{{ define "usuarios_todos" }}
+
+{{ template "head" . }}
+
+<form hx-post="/api/usuarios/todos" hx-target="#usuarios" id="filtros" hx-trigger="change">
+	<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+		<div class="input-group flex-wrap">
+			<select name="type" id="type" class="input-group-text">
+				<option value="num_cuenta" select>Numero de cuenta</option>
+				<option value="nombre">Nombre</option>
+				<option value="apell_paterno">Apellido Paterno</option>
+				<option value="apell_materno">Apellido Materno</option>
+			</select>
+			<input type="text" class="form-control" id="search" placeholder="Buscar usuario por..." aria-label="Buscar usuario por...">
+			<button class="btn btn-outline-success">Buscar</button>
+		</div>
+		<div class="input-group">
+			<label for="er" class="input-group-text">Solo rol...</label>
+			<select name="er" id="er" class="form-select">
+				<option value="all" selected>Todos</option>
+				<option value="administrativo">Administrativo</option>
+				<option value="alumno">Alumno</option>
+				<option value="invitado">Invitado</option>
+			</select>
+		</div>
+	</div>
+
+	<hr>
+
+	<div id="usuarios" hx-post="/api/usuarios/todos" hx-trigger="load"></div>
+
+</form>
+
+{{ template "footer" . }}
+
+{{ end }}
+
+
+
+<!-- Tabla -->
+
+{{ define "ut_tabla" }}
+
+<p>Registros totales: {{ .Paginador.Cantidad }}</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Nombre</th>
+			<th scope="col">Apellido Paterno</th>
+			<th scope="col">Apellido Materno</th>
+			<th scope="col">Rol</th>
+			<th scope="col">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{ range .Usuarios }}
+			<tr>
+				<th scope="row">{{ .NumCuenta }}</th>
+				<td>{{ .Nombre }}</td>
+				<td>{{ .ApellPaterno }}</td>
+				<td>{{ .ApellMaterno }}</td>
+				<td>{{ .Rol }}</td>
+				<td>
+					<button class="btn btn-warning" type="button" name="num_cuenta" value="{{ .NumCuenta }}">Editar</button>
+					<button class="btn btn-danger" type="button" name="num_cuenta" value="{{ .NumCuenta }}" >Eliminar</button></td>
+			</tr>
+		{{ end }}
+	</tbody>
+</table>
+
+{{ template "paginador" . }}
+
+{{ end }}
