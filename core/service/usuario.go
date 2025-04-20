@@ -114,3 +114,11 @@ func (us *UsuarioService) UpdateUsuario(params *url.Values) error {
 	us.repository.EditUsuario(usuario)
 	return nil
 }
+
+func (us *UsuarioService) DeleteUsuario(NumCuenta string) error {
+	nc, err := strconv.Atoi(NumCuenta)
+	if err != nil {
+		return err
+	}
+	return us.repository.DeleteUsuarioByNumCuenta(uint(nc))
+}

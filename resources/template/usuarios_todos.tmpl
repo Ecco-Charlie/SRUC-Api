@@ -69,7 +69,9 @@
 					<button class="btn btn-warning" type="button" name="u_data" value="{{ .NumCuenta }},{{ .Rol }}" 
 						data-bs-toggle="modal" data-bs-target="#editModal"
 						hx-post="/api/usuarios/editar" hx-trigger="click" hx-target="#m_edit">Editar</button>
-					<button class="btn btn-danger" type="button" name="num_cuenta" value="{{ .NumCuenta }}">Eliminar</button></td>
+
+					<button class="btn btn-danger" type="button" name="num_cuenta" value="{{ .NumCuenta }}"
+						hx-post="/api/usuarios/eliminar" hx-trigger="click" hx-target="#msg" hx-on::after-request="document.getElementById('search-btn').click()">Eliminar</button></td>
 			</tr>
 		{{ end }}
 	</tbody>

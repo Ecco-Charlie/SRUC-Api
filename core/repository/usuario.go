@@ -85,6 +85,13 @@ func (ur *UsuarioRespository) FindExtraByNumCuenta(tabla string, NumCuenta uint)
 	return &usuario, nil
 }
 
+func (ur *UsuarioRespository) DeleteUsuarioByNumCuenta(NumCuenta uint) error {
+	if err := ur.db.Delete(&entity.Usuario{}, NumCuenta).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (ur *UsuarioRespository) MigrateDataModels() {
 	ur.db.AutoMigrate(
 		&entity.Usuario{},

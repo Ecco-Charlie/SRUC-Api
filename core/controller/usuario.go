@@ -89,6 +89,14 @@ func (uc *UsuarioController) apiEditar(w http.ResponseWriter, r *http.Request) (
 	return "message", &config.Message{Message: "Usuario modificado exitosamente"}
 }
 
+func (uc *UsuarioController) apiEliminar(w http.ResponseWriter, r *http.Request) (string, any) {
+	err := uc.service.DeleteUsuario(r.PostFormValue("num_cuenta"))
+	if err != nil {
+		return "message", &config.Message{Error: true, Message: err.Error()}
+	}
+	return "message", &config.Message{Message: "Usaurio eliminado exitosamente"}
+}
+
 func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/api/login", uc.login)
 	router.HtmlMapping("/usuarios/todos", uc.todos, middleware.AuthSessionKeyMiddleware)
@@ -96,4 +104,5 @@ func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/api/usuarios/editar", uc.apiEditarView, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/usuarios/extra", uc.apiExtraParams, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/usuarios/update", uc.apiEditar, middleware.AuthSessionKeyMiddleware)
+	router.HtmlMapping("/api/usuarios/eliminar", uc.apiEliminar)
 }
