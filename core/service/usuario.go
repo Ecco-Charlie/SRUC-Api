@@ -41,11 +41,11 @@ func (us *UsuarioService) Login(ldto entity.LoginDto) (*entity.Usuario, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(acceso.Password), []byte(passwd)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(acceso.Administrativo.Acceso.Password), []byte(passwd)); err != nil {
 		return nil, pkg.ErrUnauthorized
 	}
 
-	return &acceso.Usuario, nil
+	return acceso, nil
 }
 
 func (us *UsuarioService) All(params *url.Values) (*[]entity.Usuario, *config.Paginator, error) {
@@ -70,4 +70,47 @@ func (us *UsuarioService) FindByNumCuentaAndRol(NumCuenta *string, rol *string) 
 		return nil, err
 	}
 	return us.repository.FindByNumCuentaAndRol(uint(nc), *rol+"s")
+}
+
+func (us *UsuarioService) FindExtraData(rol *string, numCuenta string) (*map[string]any, error) {
+	nc, err := strconv.Atoi(numCuenta)
+	if err != nil {
+		return nil, err
+	}
+	uextra, err := us.repository.FindExtraByNumCuenta((*rol + "s"), uint(nc))
+	if err != nil {
+		return nil, err
+	}
+	return uextra, nil
+}
+
+func (us *UsuarioService) UpdateUsuario(params *url.Values) error {
+	nc, err := strconv.Atoi(params.Get("num_cuenta"))
+	if err != nil {
+		return err
+	}
+	am := params.Get("apellmaterno")
+	usuario := &entity.Usuario{
+		NumCuenta:      uint(nc),
+		Nombre:         params.Get("nombre"),
+		ApellPaterno:   params.Get("apellpaterno"),
+		ApellMaterno:   &am,
+		Rol:            params.Get("rol"),
+		Administrativo: nil,
+		Alumno:         nil,
+	}
+	switch usuario.Rol {
+	case "administrativo":
+		usuario.Administrativo = &entity.Administrativo{
+			UsuarioNumCuenta: usuario.NumCuenta,
+			Area:             params.Get("area"),
+		}
+	case "alumno":
+		usuario.Alumno = &entity.Alumno{
+			UsuarioNumCuenta: usuario.NumCuenta,
+			Licenciatura:     params.Get("licenciatura"),
+		}
+	}
+	us.repository.EditUsuario(usuario)
+	return nil
 }

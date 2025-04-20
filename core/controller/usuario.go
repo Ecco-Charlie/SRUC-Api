@@ -51,18 +51,49 @@ func (uc *UsuarioController) apiTodos(w http.ResponseWriter, r *http.Request) (s
 	}
 }
 
-func (uc *UsuarioController) apiEditar(w http.ResponseWriter, r *http.Request) (string, any) {
+func (uc *UsuarioController) apiEditarView(w http.ResponseWriter, r *http.Request) (string, any) {
 	ud := strings.Split(r.PostFormValue("u_data"), ",")
 	usuario, err := uc.service.FindByNumCuentaAndRol(&ud[0], &ud[1])
 	if err != nil {
-		return "message", &config.Error{Message: err.Error()}
+		return "message", &config.Message{Message: err.Error(), Error: true}
 	}
 	return "u_edit_g", usuario
+}
+
+func (uc *UsuarioController) apiExtraParams(w http.ResponseWriter, r *http.Request) (string, any) {
+	var p string
+	var uextra *map[string]any
+	var err error
+	rol := r.PostFormValue("rol")
+	uextra, err = uc.service.FindExtraData(&rol, r.PostFormValue("num_cuenta"))
+	if err != nil {
+		uextra = &map[string]any{
+			"area":         "",
+			"licenciatura": "",
+		}
+	}
+	switch rol {
+	case "administrativo":
+		p = "ud_adm"
+	case "alumno":
+		p = "ud_alu"
+	default:
+		p = ""
+	}
+	return p, uextra
+}
+
+func (uc *UsuarioController) apiEditar(w http.ResponseWriter, r *http.Request) (string, any) {
+	r.ParseForm()
+	uc.service.UpdateUsuario(&r.Form)
+	return "message", &config.Message{Message: "Usuario modificado exitosamente"}
 }
 
 func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/api/login", uc.login)
 	router.HtmlMapping("/usuarios/todos", uc.todos, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/usuarios/todos", uc.apiTodos, middleware.AuthSessionKeyMiddleware)
-	router.HtmlMapping("/api/usuarios/editar", uc.apiEditar, middleware.AuthSessionKeyMiddleware)
+	router.HtmlMapping("/api/usuarios/editar", uc.apiEditarView, middleware.AuthSessionKeyMiddleware)
+	router.HtmlMapping("/api/usuarios/extra", uc.apiExtraParams, middleware.AuthSessionKeyMiddleware)
+	router.HtmlMapping("/api/usuarios/update", uc.apiEditar, middleware.AuthSessionKeyMiddleware)
 }

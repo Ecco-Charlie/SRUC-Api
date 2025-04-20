@@ -7,7 +7,7 @@ import (
 
 func GeneratePaginator(total int, actual *int) *[]string {
 	can := (total / 11) + 1
-	if *actual > can {
+	if *actual >= can {
 		*actual = 1
 	}
 	const middle = 5
@@ -61,7 +61,7 @@ func GeneratePaginator(total int, actual *int) *[]string {
 func GetCurrentPage(params *url.Values) int {
 	v, err := strconv.Atoi(params.Get("p"))
 	if err != nil {
-		return 1
+		v = 1
 	}
 
 	if params.Has("pp") {

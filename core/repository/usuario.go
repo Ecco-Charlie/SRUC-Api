@@ -18,9 +18,9 @@ func NewUsuarioRepository(db *gorm.DB) *UsuarioRespository {
 	}
 }
 
-func (ur *UsuarioRespository) FindAccesoByNumCuenta(NumCuenta uint) (*entity.Acceso, error) {
-	var acceso *entity.Acceso
-	if err := ur.db.Joins("Usuario").First(&acceso, NumCuenta).Error; err != nil {
+func (ur *UsuarioRespository) FindAccesoByNumCuenta(NumCuenta uint) (*entity.Usuario, error) {
+	var acceso *entity.Usuario
+	if err := ur.db.Preload("Administrativo.Acceso").First(&acceso, "num_cuenta = ?", NumCuenta).Error; err != nil {
 		return nil, pkg.ErrUserNotFound
 	}
 	return acceso, nil
@@ -58,10 +58,31 @@ func (ur *UsuarioRespository) All(query *gorm.DB, page int64) (*[]entity.Usuario
 
 func (ur *UsuarioRespository) FindByNumCuentaAndRol(NumCuenta uint, rol string) (*entity.Usuario, error) {
 	var usuario *entity.Usuario
-	if err := ur.db.Preload("Administrativo").Preload("Alumno").First(&usuario, NumCuenta).Error; err != nil {
+	if err := ur.db.First(&usuario, NumCuenta).Error; err != nil {
 		return nil, err
 	}
 	return usuario, nil
+}
+
+func (ur *UsuarioRespository) EditUsuario(usuario *entity.Usuario) error {
+	if usuario.Alumno == nil {
+		ur.db.Delete(&entity.Alumno{}, usuario.NumCuenta)
+	}
+	if usuario.Administrativo == nil {
+		ur.db.Delete(&entity.Administrativo{}, usuario.NumCuenta)
+	}
+	if err := ur.db.Updates(&usuario).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ur *UsuarioRespository) FindExtraByNumCuenta(tabla string, NumCuenta uint) (*map[string]any, error) {
+	var usuario map[string]any
+	if err := ur.db.Table(tabla).Where("usuario_num_cuenta = ?", NumCuenta).Take(&usuario).Error; err != nil {
+		return nil, err
+	}
+	return &usuario, nil
 }
 
 func (ur *UsuarioRespository) MigrateDataModels() {

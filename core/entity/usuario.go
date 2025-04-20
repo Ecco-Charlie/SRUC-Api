@@ -9,25 +9,23 @@ type Usuario struct {
 	ApellMaterno *string `gorm:"size:20"`
 	Rol          string  `gorm:"type:enum('administrativo','alumno','invitado')"`
 
-	Administrativo *Administrativo
-	Alumno         *Alumno
+	Administrativo *Administrativo `gorm:"foreignKey:UsuarioNumCuenta;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Alumno         *Alumno         `gorm:"foreignKey:UsuarioNumCuenta;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type Alumno struct {
-	UsuarioNumCuenta uint
-	Usuario          Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Licenciatura     string  `gorm:"size:30"`
+	UsuarioNumCuenta uint   `gorm:"primaryKey"`
+	Licenciatura     string `gorm:"size:30"`
 }
 
 type Administrativo struct {
-	UsuarioNumCuenta uint
-	Usuario          Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	UsuarioNumCuenta uint    `gorm:"primaryKey"`
 	Area             string  `gorm:"size:30"`
+	Acceso           *Acceso `gorm:"foreignKey:UsuarioNumCuenta;references:UsuarioNumCuenta;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 type Acceso struct {
-	UsuarioNumCuenta uint    `gorm:"primaryKey"`
-	Usuario          Usuario `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;not null"`
+	UsuarioNumCuenta uint `gorm:"primaryKey"`
 	Password         string
 }
 
@@ -40,4 +38,9 @@ type UserData struct {
 	NumCuenta uint   `json:"numcuenta"`
 	Nombre    string `json:"nombre"`
 	jwt.RegisteredClaims
+}
+
+type UsuarioExtraData struct {
+	Administrativo *Administrativo
+	Alumno         *Alumno
 }
