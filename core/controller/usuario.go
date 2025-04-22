@@ -35,7 +35,7 @@ func (uc *UsuarioController) login(w http.ResponseWriter, r *http.Request) (stri
 		return "", nil
 	}
 	log.Printf("%s: %s\n", r.Host, err)
-	return "message", map[string]error{"Error": err}
+	return "message", &config.Message{Message: err.Error(), Error: true}
 }
 
 func (uc *UsuarioController) todos(w http.ResponseWriter, r *http.Request) (string, any) {
