@@ -3,22 +3,22 @@
 <nav>
   <ul class="pagination">
     <li class="page-item">
-      <button class="page-link" aria-label="Previous" type="button" name="pp" hx-post="/api/usuarios/todos" hx-trigger="click" hx-target="#usuarios">
+      <button class="page-link" aria-label="Previous" type="submit" name="pp">
         <span aria-hidden="true">&laquo;</span>
       </button>
     </li>
 		{{ $c := .Paginador.Actual }}
 		{{ range .Paginador.Paginas }}
-			<li class="page-item">
+			<li class="page-item" hx-trigger="change">
 				<label class="page-link {{ if eq $c . }}active{{ end }}">
 					{{ . }} 
-					<input class="d-none" {{ if eq $c . }}checked{{ end }} type="radio" name="p" value="{{ . }}"
-					hx-post="/api/usuarios/todos" hx-target="#usuarios" id="filtros" hx-trigger="change">
+					<input class="d-none" {{ if eq $c . }}checked{{ end }} type="radio" name="p" value="{{ . }}" id="filtros"
+					onchange="htmx.trigger('#all', 'submit')">
 				</label>
 			</li>
 		{{ end }}
     <li class="page-item">
-      <button class="page-link" aria-label="Next" type="button" name="pn" hx-post="/api/usuarios/todos" hx-trigger="click" hx-target="#usuarios">
+      <button class="page-link" aria-label="Next" type="submit" name="pn">
         <span aria-hidden="true">&raquo;</span>
       </button>
     </li>

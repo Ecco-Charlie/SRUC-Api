@@ -4,7 +4,7 @@
 
 {{ template "head" . }}
 
-<form hx-post="/api/usuarios/todos" hx-target="#usuarios">
+<form hx-post="/api/usuarios/todos" hx-target="#usuarios" hx-trigger="submit" id="all">
 	<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
 		<div class="input-group flex-wrap">
 			<select name="type" id="type" class="input-group-text">

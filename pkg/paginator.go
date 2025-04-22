@@ -7,8 +7,10 @@ import (
 
 func GeneratePaginator(total int, actual *int) *[]string {
 	can := (total / 11) + 1
-	if *actual >= can {
+	if *actual > can {
 		*actual = 1
+	} else if *actual <= 0 {
+		*actual = can
 	}
 	const middle = 5
 	var p []string
