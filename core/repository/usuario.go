@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"net/url"
 
 	"gorm.io/gorm"
@@ -71,18 +72,32 @@ func (ur *UsuarioRespository) EditUsuario(usuario *entity.Usuario) error {
 	if usuario.Administrativo == nil {
 		ur.db.Delete(&entity.Administrativo{}, usuario.NumCuenta)
 	}
+	if usuario.Administrativo.Acceso == nil {
+		ur.db.Delete(&entity.Acceso{}, usuario.NumCuenta)
+	}
 	if err := ur.db.Updates(&usuario).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (ur *UsuarioRespository) FindExtraByNumCuenta(tabla string, NumCuenta uint) (*map[string]any, error) {
-	var usuario map[string]any
-	if err := ur.db.Table(tabla).Where("usuario_num_cuenta = ?", NumCuenta).Take(&usuario).Error; err != nil {
-		return nil, err
+func (ur *UsuarioRespository) FindExtraByNumCuenta(tabla *string, NumCuenta uint) (any, error) {
+	switch *tabla {
+	case "administrativo":
+		var administrativo *entity.Administrativo
+		if err := ur.db.Model(&entity.Administrativo{}).Preload("Acceso").Where("usuario_num_cuenta = ?", NumCuenta).First(&administrativo).Error; err != nil {
+			return nil, err
+		}
+		return administrativo, nil
+	case "alumno":
+		var alumno *entity.Alumno
+		if err := ur.db.Model(&entity.Alumno{}).Where("usuario_num_cuenta = ?", NumCuenta).First(&alumno).Error; err != nil {
+			return nil, err
+		}
+		return alumno, nil
+	default:
+		return nil, errors.New("empty")
 	}
-	return &usuario, nil
 }
 
 func (ur *UsuarioRespository) DeleteUsuarioByNumCuenta(NumCuenta uint) error {

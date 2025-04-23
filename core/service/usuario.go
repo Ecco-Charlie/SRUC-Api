@@ -72,12 +72,12 @@ func (us *UsuarioService) FindByNumCuentaAndRol(NumCuenta *string, rol *string) 
 	return us.repository.FindByNumCuentaAndRol(uint(nc), *rol+"s")
 }
 
-func (us *UsuarioService) FindExtraData(rol *string, numCuenta string) (*map[string]any, error) {
+func (us *UsuarioService) FindExtraData(rol *string, numCuenta string) (any, error) {
 	nc, err := strconv.Atoi(numCuenta)
 	if err != nil {
 		return nil, err
 	}
-	uextra, err := us.repository.FindExtraByNumCuenta((*rol + "s"), uint(nc))
+	uextra, err := us.repository.FindExtraByNumCuenta(rol, uint(nc))
 	if err != nil {
 		return nil, err
 	}
@@ -101,9 +101,19 @@ func (us *UsuarioService) UpdateUsuario(params *url.Values) error {
 	}
 	switch usuario.Rol {
 	case "administrativo":
+		var acceso *entity.Acceso
+		if params.Has("ha") {
+			hash, err := bcrypt.GenerateFromPassword([]byte(params.Get("passwd")), bcrypt.DefaultCost)
+			if err == nil {
+				acceso = &entity.Acceso{
+					Password: string(hash),
+				}
+			}
+		}
 		usuario.Administrativo = &entity.Administrativo{
 			UsuarioNumCuenta: usuario.NumCuenta,
 			Area:             params.Get("area"),
+			Acceso:           acceso,
 		}
 	case "alumno":
 		usuario.Alumno = &entity.Alumno{

@@ -62,14 +62,14 @@ func (uc *UsuarioController) apiEditarView(w http.ResponseWriter, r *http.Reques
 
 func (uc *UsuarioController) apiExtraParams(w http.ResponseWriter, r *http.Request) (string, any) {
 	var p string
-	var uextra *map[string]any
+	var uextra any
 	var err error
 	rol := r.PostFormValue("rol")
 	uextra, err = uc.service.FindExtraData(&rol, r.PostFormValue("num_cuenta"))
 	if err != nil {
 		uextra = &map[string]any{
-			"area":         "",
-			"licenciatura": "",
+			"Area":         "",
+			"Licenciatura": "",
 		}
 	}
 	switch rol {

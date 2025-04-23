@@ -156,8 +156,31 @@
 
 <div class="input-group">
 	<label for="area" class="input-group-text">Area</label>
-	<input type="text" class="form-control" name="area" value="{{ .area }}">
+	<input type="text" class="form-control" name="area" value="{{ .Area }}">
 </div>
+
+<div class="form-check my-3">
+	<label for="ha" class="form-check-label">Tiene acceso?</label>
+	<input type="checkbox" class="form-check-input" id="ha" name="ha" onchange="checkHasPasswd()" {{ if .Acceso }}checked{{ end }}>
+</div>
+
+<div class="input-group" id="pvi">
+	<label for="passwd" class="input-group-text">Contraseña</label>
+	<input type="password" class="form-control" name="passwd" id="passwd">
+</div>
+
+<script>
+	function checkHasPasswd() {
+		let ha = document.getElementById("ha");
+		let pvi = document.getElementById("pvi");
+		if (ha.checked) {
+			pvi.classList.remove("d-none");
+		} else {
+			pvi.classList.add("d-none");
+		}
+	}
+	checkHasPasswd()
+</script>
 
 {{ end }}
 
@@ -169,7 +192,7 @@
 
 <div class="input-group">
 	<label for="licenciatura" class="input-group-text">Licenciatura</label>
-	<input type="text" class="form-control" name="licenciatura" value="{{ .licenciatura }}">
+	<input type="text" class="form-control" name="licenciatura" value="{{ .Licenciatura }}">
 </div>
 
 {{ end }}
