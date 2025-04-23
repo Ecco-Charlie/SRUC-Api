@@ -22,6 +22,7 @@ func main() {
 	us := service.NewUsuarioService(db)
 	cs := service.NewComputadoraService(db)
 	ubs := service.NewUbicacionesService(db)
+	es := service.NewEstadoService(db)
 
 	router.RegisterControllers(
 		controller.NewUsuarioController(us),
@@ -30,6 +31,7 @@ func main() {
 
 		controller.NewComputadoraController(cs),
 		controller.NewUbicacionesController(ubs),
+		controller.NewEstadosController(es),
 	)
 
 	log.Println("El servidor inicio correctamente")

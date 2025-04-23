@@ -1,0 +1,92 @@
+<!-- Index -->
+
+{{ define "estados_todos" }}
+
+{{ template "head" . }}
+
+<form hx-post="/api/estados/todos" hx-target="#estados" hx-target="sumbit" id="all">
+	<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+		<button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#multiModal">Agregar Estado</button>
+	</div>
+
+	<hr>
+
+	<div id="msg" class="mt-2 mb-3 col-4"></div>
+	<div id="estados" hx-post="/api/estados/todos" hx-trigger="load"></div>
+
+</form>
+
+{{ template "footer" . }}
+
+{{ end }}
+
+
+
+<!-- Tabla -->
+
+{{ define "et_tabla" }}
+
+<p>Registros totales: {{ .Paginador.Cantidad }}</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Nombre</th>
+			<th scope="col">Disponibilidad</th>
+			<th scope="col">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{ range .Estados }}
+			<tr>
+				<th scope="row">{{ .Id }}</th>
+				<td class="text-{{ if eq .Disponibilidad 1 }}success{{ else if eq .Disponibilidad 2 }}warning{{ else }}danger{{ end }}">{{ .Nombre }}</td>
+				<td>{{ if eq .Disponibilidad 1 }}Usable{{ else if eq .Disponibilidad 2 }}Ocupada{{ else }}No usable{{ end }}</td>
+				<td>
+					<button class="btn btn-danger" type="button" name="id_estado" value="{{ .Id }}"
+						hx-post="/api/estados/delete" hx-trigger="click" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Eliminar</button></td>
+			</tr>
+		{{ end }}
+	</tbody>
+</table>
+
+{{ template "paginador" . }}
+
+<form class="modal fade" id="multiModal" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar estado</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="m_content">
+
+				<div class="d-flex gap-3 flex-column">
+
+					<div class="input-group">
+						<label for="nombre" class="input-group-text">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" required>
+					</div>
+
+					<div class="input-group">
+						<label for="disponibilidad" class="input-group-text">Disponibilidad</label>
+						<select class="form-select" name="disponibilidad" id="disponibilidad">
+							<option value="1">Usable</option>
+							<option value="2">Ocupada</option>
+							<option value="0">No usable</option>
+						</select>
+					</div>
+
+				</div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+					hx-post="/api/estados/add" hx-trigger="click" data-bs-dismiss="modal" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{{ end }}
