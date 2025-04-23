@@ -1,0 +1,102 @@
+<!-- Index -->
+
+{{ define "ubicaciones_todas" }}
+
+{{ template "head" . }}
+
+<form hx-post="/api/ubicaciones/todas" hx-target="#ubicaciones" hx-target="sumbit" id="all">
+	<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+		<button class="btn btn-success" type="button" hx-trigger="click" hx-post="/api/ubicaciones/agregar" hx-target="#m_content" data-bs-toggle="modal" data-bs-target="#multiModal">Agregar ubicación</button>
+	</div>
+
+	<hr>
+
+	<div id="msg" class="mt-2 mb-3 col-4"></div>
+	<div id="ubicaciones" hx-post="/api/ubicaciones/todas" hx-trigger="load"></div>
+
+</form>
+
+{{ template "footer" . }}
+
+{{ end }}
+
+
+
+<!-- Tabla -->
+
+{{ define "ubt_tabla" }}
+
+<p>Registros totales: {{ .Paginador.Cantidad }}</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Nombre</th>
+			<th scope="col">Descripcion</th>
+			<th scope="col">Capacidad</th>
+			<th scope="col">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{ range .Ubicaciones }}
+			<tr>
+				<th scope="row">{{ .Id }}</th>
+				<td>{{ .Nombre }}</th>
+				<td>{{ .Descripcion }}</td>
+				<td>{{ .Capacidad }}</td>
+				<td>
+					<button class="btn btn-danger" type="button" name="id_ubicacion" value="{{ .Id }}"
+						hx-post="/api/ubicaciones/delete" hx-trigger="click" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Eliminar</button></td>
+			</tr>
+		{{ end }}
+	</tbody>
+</table>
+
+{{ template "paginador" . }}
+
+<form class="modal fade" id="multiModal" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar ubicación</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="m_content">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+					hx-post="/api/ubicaciones/add" hx-trigger="click" data-bs-dismiss="modal" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{{ end }}
+
+
+
+<!-- Agregar -->
+{{ define "a_ubicacion" }}
+
+<div class="d-flex gap-3 flex-column">
+
+	<div class="input-group">
+		<label for="nombre" class="input-group-text">Nombre</label>
+		<input type="text" class="form-control" name="nombre" id="nombre" required>
+	</div>
+
+	<div class="input-group">
+		<label for="descripcion" class="input-group-text">Descripcion</label>
+		<input type="text" class="form-control" name="descripcion" id="descripcion" required maxlength="40">
+	</div>
+
+	<div class="input-group">
+		<label for="capacidad" class="input-group-text">Capacidad</label>
+		<input type="number" class="form-control" name="capacidad" id="capacidad" required>
+	</div>
+
+</div>
+
+{{ end }}
