@@ -19,12 +19,15 @@ func main() {
 	router.RegisterResources("/css/")
 	router.RegisterResources("/js/")
 
-	svc := service.NewUsuarioService(db)
+	us := service.NewUsuarioService(db)
+	cs := service.NewComputadoraService(db)
 
 	router.RegisterControllers(
-		controller.NewUsuarioController(svc),
-		controller.NewLoginController(svc),
+		controller.NewUsuarioController(us),
+		controller.NewLoginController(us),
 		controller.NewHomeController(),
+
+		controller.NewComputadoraController(cs),
 	)
 
 	log.Println("El servidor inicio correctamente")

@@ -1,0 +1,131 @@
+<!-- Index -->
+
+{{ define "computadoras_todas" }}
+
+{{ template "head" . }}
+
+<form hx-post="/api/computadoras/todas" hx-target="#computadoras" hx-target="sumbit" id="all">
+	<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+		<div class="input-group flex-wrap">
+			<select name="type" id="type" class="input-group-text">
+				<option value="num_patrimonial" select>Numero Patrimonial</option>
+				<option value="ip">IP</option>
+				<option value="id">Identificador</option>
+			</select>
+			<input type="text" class="form-control" name="search" id="search" placeholder="Buscar computadora por..." aria-label="Buscar computadora por...">
+			<button class="btn btn-outline-success" type="button" id="search-btn" hx-trigger="click" hx-post="/api/computadoras/todas" hx-target="#computadoras">Buscar</button>
+		</div>
+		<div class="input-group">
+			<label for="ue" class="input-group-text">Ubicación</label>
+			<select name="ue" id="ue" class="form-select" hx-post="/api/computadoras/todas" hx-target="#computadoras" id="filtros" hx-trigger="change">
+				<option value="all" selected>Todos</option>
+				{{ range .Data.Ubicaciones }}
+					<option value="{{ .Id }}">{{ .Nombre }}</option>
+				{{ end }}
+			</select>
+		</div>
+		<div class="input-group">
+			<label for="ee" class="input-group-text">Estado</label>
+			<select name="ee" id="ee" class="form-select" hx-post="/api/computadoras/todas" hx-target="#computadoras" hx-trigger="change">
+				<option value="all">Todos</option>
+				{{ range .Data.Estados }}
+					<option value="{{ .Id }}">{{ .Nombre }}</option>
+				{{ end }}
+			</select>
+		</div>
+	</div>
+
+
+	<hr>
+
+	<div id="msg" class="mt-2 mb-3 col-4"></div>
+	<div id="computadoras" hx-post="/api/computadoras/todas" hx-trigger="load"></div>
+
+</form>
+
+{{ template "footer" . }}
+
+{{ end }}
+
+
+
+<!-- Tabla -->
+
+{{ define "ct_tabla" }}
+
+<p>Registros totales: {{ .Paginador.Cantidad }}</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Num. Patrimonial</th>
+			<th scope="col">Ubicacion</th>
+			<th scope="col">Estado</th>
+			<th scope="col">Ip</th>
+			<th scope="col">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{ range .Computadoras }}
+			<tr>
+				<th scope="row">{{ .Id }}</th>
+				<td>{{ .NumPatrimonial }}</th>
+				<td>{{ .Ubicacion.Nombre }}</td>
+				<td class="text-{{ if eq .Estado.Disponibilidad 1 }}success{{ else if eq .Estado.Disponibilidad 2 }}warning{{ else }}danger{{ end }}">{{ .Estado.Nombre }}</td>
+				<td>{{ .Ip }}</td>
+				<td>
+					<button class="btn btn-warning" type="button" name="c_ec" value="{{ .Id }}" data-bs-toggle="modal" data-bs-target="#multiModal"
+						hx-post="/api/computadoras/estados" hx-trigger="click" hx-target="#m_content">Cambiar estado</button>
+
+					<button class="btn btn-danger" type="button" name="id_computadora" value="{{ .Id }}"
+						hx-post="/api/computadoras/delete" hx-trigger="click" hx-target="#msg" hx-on::after-request="document.getElementById('search-btn').click()">Eliminar</button></td>
+			</tr>
+		{{ end }}
+	</tbody>
+</table>
+
+{{ template "paginador" . }}
+
+<form class="modal fade" id="multiModal" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar datos de la computadora</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="m_content">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+					hx-post="/api/computadoras/update/estado" hx-trigger="click" data-bs-dismiss="modal" hx-target="#msg" hx-on::after-request="document.getElementById('search-btn').click()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{{ end }}
+
+
+
+<!-- Editar -->
+{{ define "c_estado_c" }}
+
+<div class="d-flex gap-3 flex-column">
+
+	<div class="input-group">
+		<label for="ce" class="input-group-text">Estado de la computadora</label>
+		<select name="ce" id="ce" class="form-select">
+			{{ range .Estados }}
+				<option value="{{ .Id }}">{{ .Nombre }}</option>
+			{{ end }}
+		</select>
+	</div>
+
+	<input class="d-none" type="text" name="id" value="{{ .ComputadoraId }}">
+
+</div>
+
+{{ end }}
+
