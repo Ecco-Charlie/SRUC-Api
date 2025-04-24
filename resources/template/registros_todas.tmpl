@@ -1,0 +1,165 @@
+<!-- Index -->
+
+{{ define "registros_todos" }}
+
+{{ template "head" . }}
+
+<form hx-post="/api/registros/todos" hx-target="#registros" id="all">
+
+	<div hx-post="/api/registros/todos" hx-trigger="change" hx-target="#registros">
+
+		<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+			<div class="input-group">
+				<label for="inicio" class="input-group-text">Fecha de Inicio</label>
+				<input type="date" class="form-control" name="inicio" id="inicio">
+			</div>
+
+			<div class="input-group">
+				<label for="fin" class="input-group-text">Fecha de Fin</label>
+				<input type="date" class="form-control" name="fin" id="fin">
+			</div>
+
+			<div class="input-group">
+				<label for="hinicio" class="input-group-text">Hora de Inicio</label>
+				<input type="time" class="form-control" name="hinicio" id="hinicio">
+			</div>
+
+			<div class="input-group">
+				<label for="hfin" class="input-group-text">Hora de Fin</label>
+				<input type="time" class="form-control" name="hfin" id="hfin">
+			</div>
+		</div>
+
+		<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+
+			<div class="input-group mt-3">
+				<label for="dia" class="input-group-text">Día</label>
+				<select name="dia" id="dia" class="form-select">
+					<option value="all" selected>Todos</option>
+					<option value="2">Lunes</option>
+					<option value="3">Martes</option>
+					<option value="4">Miercoles</option>
+					<option value="5">Jueves</option>
+					<option value="6">Viernes</option>
+					<option value="7">Sabado</option>
+				</select>
+			</div>
+
+			<div class="input-group mt-3">
+				<label for="mes" class="input-group-text">Mes</label>
+				<select name="mes" id="mes" class="form-select">
+					<option value="all" selected>Todos</option>
+					<option value="1">Enero</option>
+					<option value="2">Febrero</option>
+					<option value="3">Marzo</option>
+					<option value="4">Abril</option>
+					<option value="5">Mayo</option>
+					<option value="6">Junio</option>
+					<option value="7">Julio</option>
+					<option value="8">Agosto</option>
+					<option value="9">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+				</select>
+			</div>
+		</div>
+
+	</div>
+
+	<hr>
+
+	<div id="msg" class="mt-2 mb-3 col-4"></div>
+	<div id="registros" hx-post="/api/registros/todos" hx-trigger="load"></div>
+
+</form>
+
+{{ template "footer" . }}
+
+{{ end }}
+
+
+
+<!-- Tabla -->
+
+{{ define "rt_tabla" }}
+
+<p>Registros totales: {{ .Paginador.Cantidad }}</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">N. Patr. Computadora</th>
+			<th scope="col">Ubic. Computadora</th>
+			<th scope="col">Num. Cuenta Usuario</th>
+			<th scope="col">Nombre Usuario</th>
+			<th scope="col">Rol Usuario</th>
+			<th scope="col">Inicio</th>
+			<th scope="col">Fin</th>
+			<th scope="col">Programa</th>
+			<th scope="col">Servicio</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{ range .Registros }}
+			<tr>
+				<th scope="row">{{ .Id }}</th>
+				<td>{{ .Computadora.NumPatrimonial }}</th>
+				<td>{{ .Computadora.Ubicacion.Nombre }}</td>
+				<td>{{ .Usuario.NumCuenta }}</th>
+				<td>{{ .Usuario.Nombre }}</th>
+				<td>{{ .Usuario.Rol }}</th>
+				<td>{{ .Inicio }}</th>
+				<td>{{ .Fin }}</th>
+				<td>{{ .Programa.Nombre }}</th>
+				<td>{{ .Servicio.Nombre }}</th>
+			</tr>
+		{{ end }}
+	</tbody>
+</table>
+
+{{ template "paginador" . }}
+
+<form class="modal fade" id="multiModal" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar datos de la computadora</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="m_content">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+					hx-post="/api/computadoras/update/estado" hx-trigger="click" data-bs-dismiss="modal" hx-target="#msg" hx-on::after-request="document.getElementById('search-btn').click()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{{ end }}
+
+
+
+<!-- Editar -->
+{{ define "c_estado_c" }}
+
+<div class="d-flex gap-3 flex-column">
+
+	<div class="input-group">
+		<label for="ce" class="input-group-text">Estado de la computadora</label>
+		<select name="ce" id="ce" class="form-select">
+			{{ range .Estados }}
+				<option value="{{ .Id }}">{{ .Nombre }}</option>
+			{{ end }}
+		</select>
+	</div>
+
+	<input class="d-none" type="text" name="id" value="{{ .ComputadoraId }}">
+
+</div>
+
+{{ end }}
+
