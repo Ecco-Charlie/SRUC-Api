@@ -19,7 +19,12 @@ func NewRegistroControlle(svc *service.RegistroService) *RegistroController {
 }
 
 func (rc *RegistroController) index(w http.ResponseWriter, r *http.Request) (string, any) {
-	return "registros_todos", &config.PageData{Path: "Registros-Todos"}
+	licenciaturas, _ := rc.service.AllLicenciaturas()
+	areas, _ := rc.service.AllAreas()
+	return "registros_todos", &config.PageData{Path: "Registros-Todos", Data: map[string]any{
+		"Licenciaturas": licenciaturas,
+		"Areas":         areas,
+	}}
 }
 
 func (rc *RegistroController) apiTodos(w http.ResponseWriter, r *http.Request) (string, any) {

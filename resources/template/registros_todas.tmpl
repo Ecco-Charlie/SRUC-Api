@@ -63,7 +63,68 @@
 					<option value="12">Diciembre</option>
 				</select>
 			</div>
+
 		</div>
+
+		<div class="d-flex gap-3 flex-wrap flex-lg-nowrap mt-3">
+
+			<fieldset class="input-group" id="alu">
+				<label for="alumno" class="input-group-text">Solo alumnos</label>
+				<div class="input-group-text">
+					<input type="checkbox" class="form-check-input" id="alumno" name="alumno" onchange="checkAlu()">
+				</div>
+				<label for="licenciatura" class="input-group-text">Licenciaturas</label>
+				<select name="licenciatura" id="licenciatura" class="form-select" onchange="checkAlu()">
+					<option value="all" selected>Todas</option>
+					{{ range .Data.Licenciaturas }}
+						<option value="{{.}}">{{.}}</option>
+					{{ end }}
+				</select>
+			</fieldset>
+			
+			<fieldset class="input-group" id="adm">
+				<label for="administrativo" class="input-group-text">Solo administrativos</label>
+				<div class="input-group-text">
+					<input type="checkbox" class="form-check-input" id="administrativo" name="administrativo" onchange="checkAdm()">
+				</div>
+				<label for="area" class="input-group-text">Area</label>
+				<select name="area" id="area" class="form-select" onchange="checkAdm()">
+					<option value="all">Todas</option>
+					{{ range .Data.Areas }}
+						<option value="{{.}}">{{.}}</option>
+					{{ end }}
+				</select>
+			</fieldset>
+		</div>
+
+		<script>
+			const alu = document.getElementById("alumno");
+			const adm = document.getElementById("administrativo");
+			const are = document.getElementById("area");
+			const lic = document.getElementById("licenciatura");
+			const calu = document.getElementById("alu");
+			const cadm = document.getElementById("adm");
+	
+			function checkAlu() {
+				if (alu.checked || lic.value != "all") {
+					cadm.setAttribute("disabled", "");
+				} else {
+					cadm.removeAttribute("disabled");
+				}
+			}
+
+			function checkAdm() {
+				if (adm.checked || are.value != "all") {
+					calu.setAttribute("disabled", "");
+				} else {
+					calu.removeAttribute("disabled");
+				}
+			}
+
+			checkAlu();
+			checkAdm();
+
+		</script>
 
 	</div>
 

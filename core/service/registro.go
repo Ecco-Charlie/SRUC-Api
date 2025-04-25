@@ -38,3 +38,11 @@ func (rs *RegistroService) All(params *url.Values) (*[]entity.Registro, *config.
 		Paginas:  paginator,
 	}, nil
 }
+
+func (rs *RegistroService) AllLicenciaturas() (*[]string, error) {
+	return rs.repository.AllLicenciaturas()
+}
+
+func (rs *RegistroService) AllAreas() (*[]string, error) {
+	return rs.repository.AllAreas()
+}
