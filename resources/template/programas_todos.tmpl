@@ -1,0 +1,86 @@
+<!-- Index -->
+
+{{ define "programas_todos" }}
+
+{{ template "head" . }}
+
+<form hx-post="/api/programas/todos" hx-target="#programas" hx-target="sumbit" id="all">
+	<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+		<button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#multiModal">Agregar Programa</button>
+	</div>
+
+	<hr>
+
+	<div id="msg" class="mt-2 mb-3 col-4"></div>
+	<div id="programas" hx-post="/api/programas/todos" hx-trigger="load"></div>
+
+</form>
+
+{{ template "footer" . }}
+
+{{ end }}
+
+
+
+<!-- Tabla -->
+
+{{ define "pt_tabla" }}
+
+<p>Registros totales: {{ .Paginador.Cantidad }}</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">Nombre del paquete</th>
+			<th scope="col">Nombre</th>
+			<th scope="col">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{ range .Programas }}
+			<tr>
+				<th scope="row">{{ .Id }}</th>
+				<td>{{ .Nombre }}</td>
+				<td>
+					<button class="btn btn-danger" type="button" name="id_programa" value="{{ .Id }}"
+						hx-post="/api/programas/delete" hx-trigger="click" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Eliminar</button></td>
+			</tr>
+		{{ end }}
+	</tbody>
+</table>
+
+{{ template "paginador" . }}
+
+<form class="modal fade" id="multiModal" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar programa</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="m_content">
+
+				<div class="d-flex gap-3 flex-column">
+
+					<div class="input-group">
+						<label for="paquete" class="input-group-text">Nombre del paquete</label>
+						<input type="text" class="form-control" name="paquete" id="paquete" required>
+					</div>
+
+					<div class="input-group">
+						<label for="nombre" class="input-group-text">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombr">
+					</div>
+
+				</div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+					hx-post="/api/programas/add" hx-trigger="click" data-bs-dismiss="modal" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{{ end }}
