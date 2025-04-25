@@ -71,10 +71,10 @@ func (ur *UsuarioRespository) EditUsuario(usuario *entity.Usuario) error {
 	}
 	if usuario.Administrativo == nil {
 		ur.db.Delete(&entity.Administrativo{}, usuario.NumCuenta)
-	}
-	if usuario.Administrativo.Acceso == nil {
+	} else if usuario.Administrativo.Acceso == nil {
 		ur.db.Delete(&entity.Acceso{}, usuario.NumCuenta)
 	}
+
 	if err := ur.db.Updates(&usuario).Error; err != nil {
 		return err
 	}
