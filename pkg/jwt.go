@@ -37,3 +37,18 @@ func ValidateJwt(token *string) (*entity.UserData, error) {
 
 	return claims, nil
 }
+
+func RestValidateJwt(token *string) error {
+	tk, err := jwt.Parse(*token, func(t *jwt.Token) (any, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("No sign")
+		}
+		return []byte(*GetEnv("JWT_PRIVATE_KEY", "soft.exe")), nil
+	})
+
+	if err != nil || !tk.Valid {
+		return err
+	}
+
+	return nil
+}
