@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
@@ -21,4 +22,12 @@ func MethodNotAllowed(w http.ResponseWriter, who *string) {
 func InternalError(w http.ResponseWriter, who *string) {
 	log.Printf("%s: Error interno del servidor", *who)
 	w.WriteHeader(http.StatusInternalServerError)
+}
+
+func NotFound(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNotFound)
+}
+
+func Ok[T any](w http.ResponseWriter, body T) {
+	json.NewEncoder(w).Encode(body)
 }

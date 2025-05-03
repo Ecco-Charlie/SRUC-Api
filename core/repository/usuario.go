@@ -107,6 +107,14 @@ func (ur *UsuarioRespository) DeleteUsuarioByNumCuenta(NumCuenta uint) error {
 	return nil
 }
 
+func (ur *UsuarioRespository) FindUsuarioAll(NumCuenta int) (*entity.Usuario, error) {
+	var usuario *entity.Usuario
+	if err := ur.db.Preload("Alumno").Preload("Administrativo").First(&usuario, NumCuenta).Error; err != nil {
+		return nil, err
+	}
+	return usuario, nil
+}
+
 func (ur *UsuarioRespository) MigrateDataModels() {
 	ur.db.AutoMigrate(
 		&entity.Usuario{},

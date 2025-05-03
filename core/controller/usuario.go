@@ -97,6 +97,16 @@ func (uc *UsuarioController) apiEliminar(w http.ResponseWriter, r *http.Request)
 	return "message", &config.Message{Message: "Usaurio eliminado exitosamente"}
 }
 
+// REST
+func (uc *UsuarioController) apiFindUsuario(w http.ResponseWriter, r *http.Request) {
+	u, err := uc.service.FindUsuarioAll(r.URL.Path)
+	if err != nil {
+		pkg.NotFound(w)
+		return
+	}
+	pkg.Ok(w, u)
+}
+
 func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/api/login", uc.login)
 	router.HtmlMapping("/usuarios/todos", uc.todos, middleware.AuthSessionKeyMiddleware)
@@ -104,5 +114,7 @@ func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/api/usuarios/editar", uc.apiEditarView, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/usuarios/extra", uc.apiExtraParams, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/usuarios/update", uc.apiEditar, middleware.AuthSessionKeyMiddleware)
-	router.HtmlMapping("/api/usuarios/eliminar", uc.apiEliminar)
+	router.HtmlMapping("/api/usuarios/eliminar", uc.apiEliminar, middleware.AuthSessionKeyMiddleware)
+	// REST
+	router.GetMapping("/api/usuarios/find/", uc.apiFindUsuario, middleware.RestAuthSessionKeyMiddleware)
 }

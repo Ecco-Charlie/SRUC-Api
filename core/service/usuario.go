@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/base64"
+	"errors"
 	"net/url"
 	"strconv"
 
@@ -131,4 +132,20 @@ func (us *UsuarioService) DeleteUsuario(NumCuenta string) error {
 		return err
 	}
 	return us.repository.DeleteUsuarioByNumCuenta(uint(nc))
+}
+
+func (us *UsuarioService) FindUsuarioAll(path string) (*entity.Usuario, error) {
+	nc := pkg.GetParameter(&path, 3)
+	if nc == "" {
+		return nil, errors.New("empty")
+	}
+	n, err := strconv.Atoi(nc)
+	if err != nil {
+		return nil, err
+	}
+	u, err := us.repository.FindUsuarioAll(n)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
 }
