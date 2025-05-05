@@ -104,7 +104,7 @@ func (uc *UsuarioController) apiFindUsuario(w http.ResponseWriter, r *http.Reque
 		pkg.NotFound(w)
 		return
 	}
-	pkg.Ok(w, u)
+	pkg.RestOk(w, u)
 }
 
 func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {

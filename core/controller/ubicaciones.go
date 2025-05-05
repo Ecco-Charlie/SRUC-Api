@@ -6,6 +6,7 @@ import (
 	"soft.exe/sruc/config"
 	"soft.exe/sruc/core/middleware"
 	"soft.exe/sruc/core/service"
+	"soft.exe/sruc/pkg"
 )
 
 type UbicacionesController struct {
@@ -56,10 +57,20 @@ func (uc *UbicacionesController) apiEliminarUbicacion(w http.ResponseWriter, r *
 	return "message", me
 }
 
+func (uc *UbicacionesController) apiRestTodas(w http.ResponseWriter, r *http.Request) {
+	ubicaciones, err := uc.service.AllNature()
+	if err != nil {
+		pkg.InternalError(w, &r.Host)
+		return
+	}
+	pkg.RestOk(w, ubicaciones)
+}
+
 func (uc *UbicacionesController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/ubicaciones/todas", uc.index, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/ubicaciones/todas", uc.apiUbicacionesTodas, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/ubicaciones/agregar", uc.apiAgregarUbicacionesView, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/ubicaciones/add", uc.apiAgregarUbicacion, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/ubicaciones/delete", uc.apiEliminarUbicacion, middleware.AuthSessionKeyMiddleware)
+	router.GetMapping("/api/ubicaciones/all", uc.apiRestTodas, middleware.RestAuthSessionKeyMiddleware)
 }

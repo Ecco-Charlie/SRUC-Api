@@ -3,7 +3,7 @@ package entity
 type Computadora struct {
 	Id             uint   `gorm:"primaryKey"`
 	NumPatrimonial string `gorm:"size:10;unique"`
-	Ip             string `gorm:"size:14"`
+	Ip             string `gorm:"size:14;unique"`
 
 	UbicacionId uint
 	Ubicacion   Ubicacion
@@ -25,14 +25,8 @@ type Estado struct {
 	Disponibilidad uint8
 }
 
-type Clase struct {
-	Id uint `gorm:"primaryKey"`
-
-	UbicacionId uint
-	Ubicacion   Ubicacion
-
-	Dia    string `gorm:"size:9"`
-	Inicio CTime
-	Fin    CTime
-	Grupo  string `gorm:"size:8"`
+type ComputadoraDto struct {
+	NumPatrimonial string `json:"num_patrimonial"`
+	Ubicacion      int32  `json:"ubicacion"`
+	Ip             string `json:"ip"`
 }

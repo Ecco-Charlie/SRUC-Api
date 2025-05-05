@@ -66,3 +66,13 @@ func (cs *ComputadoraService) DeleteComputadora(idComputadora string) error {
 	}
 	return cs.repository.DeleteComputadora(&id)
 }
+
+func (cs *ComputadoraService) SaveComputadora(cdto *entity.ComputadoraDto) error {
+	c := &entity.Computadora{
+		Ip:             cdto.Ip,
+		NumPatrimonial: cdto.NumPatrimonial,
+		UbicacionId:    uint(cdto.Ubicacion),
+		EstadoId:       1,
+	}
+	return cs.repository.SaveComputadora(c)
+}

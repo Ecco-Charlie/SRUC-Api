@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"soft.exe/sruc/config"
+	"soft.exe/sruc/core/entity"
 	"soft.exe/sruc/core/middleware"
 	"soft.exe/sruc/core/service"
+	"soft.exe/sruc/pkg"
 )
 
 type ComputadoraController struct {
@@ -81,10 +83,22 @@ func (cc *ComputadoraController) apiDelete(w http.ResponseWriter, r *http.Reques
 	return "message", es
 }
 
+func (cc *ComputadoraController) apiSaveComputadora(w http.ResponseWriter, r *http.Request) {
+	var cdto *entity.ComputadoraDto
+	pkg.ParseResponse(r, &cdto)
+	if err := cc.service.SaveComputadora(cdto); err != nil {
+		more := err.Error()
+		pkg.Conflict(w, &r.Host, &more)
+		return
+	}
+	pkg.RestOkEmpty(w)
+}
+
 func (cc *ComputadoraController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/computadoras/todas", cc.computadorasTodas, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/computadoras/todas", cc.apiComputadorasTodas, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/computadoras/estados", cc.apiEstados, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/computadoras/update/estado", cc.apiUpdateEstado, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/computadoras/delete", cc.apiDelete, middleware.AuthSessionKeyMiddleware)
+	router.PostMapping("/api/computadoras/save", cc.apiSaveComputadora, middleware.RestAuthSessionKeyMiddleware)
 }
