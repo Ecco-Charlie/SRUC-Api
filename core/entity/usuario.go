@@ -14,14 +14,26 @@ type Usuario struct {
 }
 
 type Alumno struct {
-	UsuarioNumCuenta uint   `gorm:"primaryKey"`
-	Licenciatura     string `gorm:"size:30"`
+	UsuarioNumCuenta uint `gorm:"primaryKey"`
+	LicenciaturaId   uint
+	Licenciatura     Licenciatura
+}
+
+type Licenciatura struct {
+	Id     uint   `gorm:"primaryKey"`
+	Nombre string `gorm:"size:30"`
 }
 
 type Administrativo struct {
-	UsuarioNumCuenta uint    `gorm:"primaryKey"`
-	Area             string  `gorm:"size:30"`
+	UsuarioNumCuenta uint `gorm:"primaryKey"`
+	AreaId           uint
+	Area             Area
 	Acceso           *Acceso `gorm:"foreignKey:UsuarioNumCuenta;references:UsuarioNumCuenta;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+}
+
+type Area struct {
+	Id     uint   `gorm:"primaryKey"`
+	Nombre string `gorm:"size:30"`
 }
 
 type Acceso struct {

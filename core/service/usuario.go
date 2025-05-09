@@ -111,15 +111,23 @@ func (us *UsuarioService) UpdateUsuario(params *url.Values) error {
 				}
 			}
 		}
+		area, err := strconv.Atoi(params.Get("area"))
+		if err != nil {
+			return errors.New("no area id")
+		}
 		usuario.Administrativo = &entity.Administrativo{
 			UsuarioNumCuenta: usuario.NumCuenta,
-			Area:             params.Get("area"),
+			AreaId:           uint(area),
 			Acceso:           acceso,
 		}
 	case "alumno":
+		licenciatura, err := strconv.Atoi(params.Get("licenciatura"))
+		if err != nil {
+			return errors.New("no licenciatura id")
+		}
 		usuario.Alumno = &entity.Alumno{
 			UsuarioNumCuenta: usuario.NumCuenta,
-			Licenciatura:     params.Get("licenciatura"),
+			LicenciaturaId:   uint(licenciatura),
 		}
 	}
 	us.repository.EditUsuario(usuario)
@@ -148,4 +156,12 @@ func (us *UsuarioService) FindUsuarioAll(path string) (*entity.Usuario, error) {
 		return nil, err
 	}
 	return u, nil
+}
+
+func (us *UsuarioService) AllLicenciaturas() (*[]entity.Licenciatura, error) {
+	return us.repository.AllLicenciaturas()
+}
+
+func (us UsuarioService) AllAreas() (*[]entity.Area, error) {
+	return us.repository.AllAreas()
 }

@@ -1,0 +1,88 @@
+<!-- Index -->
+
+{{ define "areas_todas" }}
+
+{{ template "head" . }}
+
+<form hx-post="/api/areas/todas" hx-target="#areas" hx-target="sumbit" id="all">
+	<div class="d-flex gap-3 flex-wrap flex-lg-nowrap">
+		<button class="btn btn-success" type="button" hx-trigger="click" hx-post="/api/areas/agregar" hx-target="#m_content" data-bs-toggle="modal" data-bs-target="#multiModal">Agregar área</button>
+	</div>
+
+	<hr>
+
+	<div id="msg" class="mt-2 mb-3 col-4"></div>
+	<div id="areas" hx-post="/api/areas/todas" hx-trigger="load"></div>
+
+</form>
+
+{{ template "footer" . }}
+
+{{ end }}
+
+
+
+<!-- Tabla -->
+
+{{ define "at_tabla" }}
+
+<p>Registros totales: {{ .Paginador.Cantidad }}</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Nombre</th>
+			<th scope="col">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{ range .Areas }}
+			<tr>
+				<th scope="row">{{ .Id }}</th>
+				<td>{{ .Nombre }}</th>
+				<td>
+					<button class="btn btn-danger" type="button" name="id_area" value="{{ .Id }}"
+						hx-post="/api/areas/delete" hx-trigger="click" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Eliminar</button></td>
+			</tr>
+		{{ end }}
+	</tbody>
+</table>
+
+{{ template "paginador" . }}
+
+<form class="modal fade" id="multiModal" tabindex="-1" aria-labelledby="multiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar área</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="m_content">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+					hx-post="/api/areas/add" hx-trigger="click" data-bs-dismiss="modal" hx-target="#msg" hx-on::after-request="htmx.trigger('#all', 'submit')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{{ end }}
+
+
+
+<!-- Agregar -->
+{{ define "a_area" }}
+
+<div class="d-flex gap-3 flex-column">
+
+	<div class="input-group">
+		<label for="nombre" class="input-group-text">Nombre</label>
+		<input type="text" class="form-control" name="nombre" id="nombre" required>
+	</div>
+
+</div>
+
+{{ end }}

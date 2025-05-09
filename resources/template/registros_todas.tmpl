@@ -77,7 +77,7 @@
 				<select name="licenciatura" id="licenciatura" class="form-select" onchange="checkAlu()">
 					<option value="all" selected>Todas</option>
 					{{ range .Data.Licenciaturas }}
-						<option value="{{.}}">{{.}}</option>
+						<option value="{{.Id}}">{{.Nombre}}</option>
 					{{ end }}
 				</select>
 			</fieldset>
@@ -91,7 +91,7 @@
 				<select name="area" id="area" class="form-select" onchange="checkAdm()">
 					<option value="all">Todas</option>
 					{{ range .Data.Areas }}
-						<option value="{{.}}">{{.}}</option>
+						<option value="{{.Id}}">{{.Nombre}}</option>
 					{{ end }}
 				</select>
 			</fieldset>

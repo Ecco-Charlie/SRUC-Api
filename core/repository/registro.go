@@ -57,7 +57,7 @@ func (rr *RegistroRepository) CountAll(params *url.Values, cantidad *int64) (*go
 	if params.Has("licenciatura") && params.Get("licenciatura") != "all" {
 		query = query.Joins("Usuario").
 			Joins("Usuario.Alumno").
-			Where("licenciatura = ?", params.Get("licenciatura")).
+			Where("licenciatura_id = ?", params.Get("licenciatura")).
 			Preload("Usuario.Alumno")
 	}
 
@@ -74,7 +74,7 @@ func (rr *RegistroRepository) CountAll(params *url.Values, cantidad *int64) (*go
 	if params.Has("area") && params.Get("area") != "all" {
 		query = query.Joins("Usuario").
 			Joins("Usuario.Administrativo").
-			Where("area = ?", params.Get("area"))
+			Where("area_id = ?", params.Get("area"))
 	}
 
 	if err := query.Count(cantidad).Error; err != nil {
@@ -95,17 +95,17 @@ func (rr *RegistroRepository) All(query *gorm.DB, page int64) (*[]entity.Registr
 	return computadoras, nil
 }
 
-func (rr *RegistroRepository) AllLicenciaturas() (*[]string, error) {
-	var licenciaturas *[]string
-	if err := rr.db.Model(&entity.Alumno{}).Distinct("Licenciatura").Find(&licenciaturas).Error; err != nil {
+func (rr *RegistroRepository) AllLicenciaturas() (*[]entity.Licenciatura, error) {
+	var licenciaturas *[]entity.Licenciatura
+	if err := rr.db.Model(&entity.Licenciatura{}).Find(&licenciaturas).Error; err != nil {
 		return nil, err
 	}
 	return licenciaturas, nil
 }
 
-func (rr *RegistroRepository) AllAreas() (*[]string, error) {
-	var areas *[]string
-	if err := rr.db.Model(&entity.Administrativo{}).Distinct("Area").Find(&areas).Error; err != nil {
+func (rr *RegistroRepository) AllAreas() (*[]entity.Area, error) {
+	var areas *[]entity.Area
+	if err := rr.db.Model(&entity.Area{}).Find(&areas).Error; err != nil {
 		return nil, err
 	}
 	return areas, nil

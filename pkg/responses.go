@@ -32,8 +32,12 @@ func InternalError(w http.ResponseWriter, who *string) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-func NotFound(w http.ResponseWriter) {
-	w.WriteHeader(http.StatusNotFound)
+func NotFound(w http.ResponseWriter, what string) {
+	rr := &RestResponse[any]{
+		Status:  false,
+		Message: fmt.Sprintf("No fue posible encontar %s", what),
+	}
+	json.NewEncoder(w).Encode(rr)
 }
 
 func BadRequest(w http.ResponseWriter, who *string) {
@@ -47,7 +51,6 @@ func Conflict(w http.ResponseWriter, who, more *string) {
 		Status:  false,
 		Message: fmt.Sprintf("Hay un conflicto entre datos, causa: %s", *more),
 	}
-	fmt.Println(*rr)
 	json.NewEncoder(w).Encode(rr)
 }
 
