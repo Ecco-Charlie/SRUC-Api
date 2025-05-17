@@ -37,7 +37,7 @@ func (pc *ProgramasController) apiAgregar(w http.ResponseWriter, r *http.Request
 	if err := pc.service.AgregarPrograma(&r.Form); err != nil {
 		me = &config.Message{Error: true, Message: err.Error()}
 	} else {
-		me = &config.Message{Message: "Programa eliminado correctamente"}
+		me = &config.Message{Message: "Programa agregado correctamente"}
 	}
 	return "message", me
 }
