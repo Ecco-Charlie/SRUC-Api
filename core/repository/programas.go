@@ -46,4 +46,20 @@ func (pr *ProgramasRepository) Eliminar(id *string) error {
 	return pr.db.Delete(&entity.Programa{}, id).Error
 }
 
+func (pr *ProgramasRepository) AllUnix() (*[]entity.Programa, error) {
+	var programas *[]entity.Programa
+	if err := pr.db.Model(&entity.Programa{}).Where("id NOT LIKE '%.EXE'").Find(&programas).Error; err != nil {
+		return nil, err
+	}
+	return programas, nil
+}
+
+func (pr *ProgramasRepository) AllWindows() (*[]entity.Programa, error) {
+	var programas *[]entity.Programa
+	if err := pr.db.Model(&entity.Programa{}).Where("id LIKE '%.EXE'").Find(&programas).Error; err != nil {
+		return nil, err
+	}
+	return programas, nil
+}
+
 func (pr *ProgramasRepository) MigrateDataModels() {}

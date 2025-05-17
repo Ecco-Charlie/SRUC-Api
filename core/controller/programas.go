@@ -6,6 +6,7 @@ import (
 	"soft.exe/sruc/config"
 	"soft.exe/sruc/core/middleware"
 	"soft.exe/sruc/core/service"
+	"soft.exe/sruc/pkg"
 )
 
 type ProgramasController struct {
@@ -52,9 +53,27 @@ func (pc *ProgramasController) apiEliminar(w http.ResponseWriter, r *http.Reques
 	return "message", me
 }
 
+func (pc *ProgramasController) apiAllUnix(w http.ResponseWriter, r *http.Request) {
+	programas, err := pc.service.AllUnix()
+	if err != nil {
+		pkg.NotFound(w, err.Error())
+	}
+	pkg.RestOk(w, programas)
+}
+
+func (pc *ProgramasController) apiAllWindows(w http.ResponseWriter, r *http.Request) {
+	programas, err := pc.service.AllWindows()
+	if err != nil {
+		pkg.NotFound(w, err.Error())
+	}
+	pkg.RestOk(w, programas)
+}
+
 func (pc *ProgramasController) RegisterEndpoints(router *config.Router) {
 	router.HtmlMapping("/programas/todos", pc.index, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/programas/todos", pc.apiTodos, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/programas/add", pc.apiAgregar, middleware.AuthSessionKeyMiddleware)
 	router.HtmlMapping("/api/programas/delete", pc.apiEliminar, middleware.AuthSessionKeyMiddleware)
+	router.GetMapping("/api/programas/unix", pc.apiAllUnix, middleware.RestAuthSessionKeyMiddleware)
+	router.GetMapping("/api/programas/windows", pc.apiAllWindows, middleware.RestAuthSessionKeyMiddleware)
 }
