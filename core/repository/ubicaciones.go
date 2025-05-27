@@ -46,9 +46,9 @@ func (ur *UbicacionesRepository) Eliminar(id *int) error {
 	return ur.db.Where("Id = ?", id).Delete(&entity.Ubicacion{}).Error
 }
 
-func (ur *UbicacionesRepository) AllNature() (*[]entity.Ubicacion, error) {
-	var ubicaciones *[]entity.Ubicacion
-	if err := ur.db.Find(&ubicaciones).Error; err != nil {
+func (ur *UbicacionesRepository) AllNature() (*[]entity.UbicacionRest, error) {
+	var ubicaciones *[]entity.UbicacionRest
+	if err := ur.db.Model(&entity.Ubicacion{}).Select("id", "nombre").Find(&ubicaciones).Error; err != nil {
 		return nil, err
 	}
 	return ubicaciones, nil

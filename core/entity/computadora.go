@@ -19,6 +19,11 @@ type Ubicacion struct {
 	Capacidad   uint8
 }
 
+type UbicacionRest struct {
+	Id     uint
+	Nombre string
+}
+
 type Estado struct {
 	Id             uint   `gorm:"primaryKey"`
 	Nombre         string `gorm:"size:15"`

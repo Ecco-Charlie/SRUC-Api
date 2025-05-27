@@ -60,6 +60,6 @@ func (us *UbicacionesService) EliminarUbicacion(id string) error {
 	return us.repository.Eliminar(&iu)
 }
 
-func (us *UbicacionesService) AllNature() (*[]entity.Ubicacion, error) {
+func (us *UbicacionesService) AllNature() (*[]entity.UbicacionRest, error) {
 	return us.repository.AllNature()
 }
