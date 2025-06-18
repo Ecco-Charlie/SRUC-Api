@@ -12,11 +12,19 @@ type Computadora struct {
 	Estado   Estado
 }
 
+func (Computadora) TableName() string {
+	return "computadora"
+}
+
 type Ubicacion struct {
 	Id          uint   `gorm:"primaryKey"`
 	Nombre      string `gorm:"size:20"`
 	Descripcion string `gorm:"size:40"`
 	Capacidad   uint8
+}
+
+func (Ubicacion) TableName() string {
+	return "ubicacion"
 }
 
 type UbicacionRest struct {
@@ -28,6 +36,10 @@ type Estado struct {
 	Id             uint   `gorm:"primaryKey"`
 	Nombre         string `gorm:"size:15"`
 	Disponibilidad uint8
+}
+
+func (Estado) TableName() string {
+	return "estado"
 }
 
 type ComputadoraDto struct {

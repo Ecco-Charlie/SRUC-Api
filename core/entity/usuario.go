@@ -13,15 +13,27 @@ type Usuario struct {
 	Alumno         *Alumno         `gorm:"foreignKey:UsuarioNumCuenta;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
+func (Usuario) TableName() string {
+	return "usuario"
+}
+
 type Alumno struct {
 	UsuarioNumCuenta uint `gorm:"primaryKey"`
 	LicenciaturaId   uint
 	Licenciatura     Licenciatura
 }
 
+func (Alumno) TableName() string {
+	return "alumno"
+}
+
 type Licenciatura struct {
 	Id     uint   `gorm:"primaryKey"`
 	Nombre string `gorm:"size:30"`
+}
+
+func (Licenciatura) TableName() string {
+	return "licenciatura"
 }
 
 type Administrativo struct {
@@ -31,14 +43,26 @@ type Administrativo struct {
 	Acceso           *Acceso `gorm:"foreignKey:UsuarioNumCuenta;references:UsuarioNumCuenta;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
+func (Administrativo) TableName() string {
+	return "administrativo"
+}
+
 type Area struct {
 	Id     uint   `gorm:"primaryKey"`
 	Nombre string `gorm:"size:30"`
 }
 
+func (Area) TableName() string {
+	return "area"
+}
+
 type Acceso struct {
 	UsuarioNumCuenta uint `gorm:"primaryKey"`
 	Password         string
+}
+
+func (Acceso) TableName() string {
+	return "acceso"
 }
 
 type LoginDto struct {

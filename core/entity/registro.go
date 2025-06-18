@@ -18,12 +18,24 @@ type Registro struct {
 	Usuario   Usuario
 }
 
+func (Registro) TableName() string {
+	return "registro"
+}
+
 type Programa struct {
 	Id     string `gorm:"size:20"`
 	Nombre string `gorm:"size:25"`
 }
 
+func (Programa) TableName() string {
+	return "programa"
+}
+
 type Servicio struct {
 	Id     string `gorm:"size:20"`
 	Nombre string `gorm:"size:25"`
+}
+
+func (Servicio) TableName() string {
+	return "servicio"
 }

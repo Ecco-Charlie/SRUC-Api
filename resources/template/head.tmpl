@@ -239,13 +239,6 @@
       <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
         <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
           <ul class="nav flex-column">
-            <li class="nav-item">
-							<a class="nav-link d-flex align-items-center gap-2 {{ if eq .Path "Dashboard"}}active{{ end }}" aria-current="page" href="/dashboard">
-                <svg class="bi" aria-hidden="true"><use xlink:href="#house-fill"/></svg>
-                Dashboard
-              </a>
-            </li>
-
           <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
             <span>Usuarios</span>
           </h6>
@@ -254,18 +247,6 @@
               <a class="nav-link d-flex align-items-center gap-2 {{ if eq .Path "Usuarios-Todos"}}active{{ end }}" href="/usuarios/todos">
 								<i class="bi bi-people"></i>
 								Todos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2 {{ if eq .Path "Usuarios-Licenciaturas"}}active{{ end }}" href="/usuarios/licenciaturas">
-								<i class="bi bi-book"></i>
-								Licenciaturas
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2 {{ if eq .Path "Usuarios-Areas"}}active{{ end }}" href="/usuarios/areas">
-								<i class="bi bi-building"></i>
-								Áreas
               </a>
             </li>
           </ul>
