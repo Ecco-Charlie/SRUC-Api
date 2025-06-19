@@ -18,7 +18,7 @@ func (hc *HomeController) index(w http.ResponseWriter, r *http.Request) (string,
 }
 
 func (hc *HomeController) redirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+	http.Redirect(w, r, "/usuarios/todos", http.StatusSeeOther)
 }
 
 func (hc *HomeController) RegisterEndpoints(router *config.Router) {
