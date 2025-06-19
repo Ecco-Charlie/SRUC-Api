@@ -79,11 +79,14 @@ func (cr *ComputadoraRepository) DeleteComputadora(id *int) error {
 	return cr.db.Delete(&entity.Computadora{}, id).Error
 }
 
+func (cr *ComputadoraRepository) SaveComputadora(c *entity.Computadora) error {
+	return cr.db.Create(&c).Error
+}
+
 func (cr *ComputadoraRepository) MigrateDataModels() {
 	cr.db.AutoMigrate(
 		&entity.Ubicacion{},
 		&entity.Estado{},
-		&entity.Clase{},
 		&entity.Computadora{},
 	)
 }

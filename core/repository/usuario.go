@@ -85,13 +85,13 @@ func (ur *UsuarioRespository) FindExtraByNumCuenta(tabla *string, NumCuenta uint
 	switch *tabla {
 	case "administrativo":
 		var administrativo *entity.Administrativo
-		if err := ur.db.Model(&entity.Administrativo{}).Preload("Acceso").Where("usuario_num_cuenta = ?", NumCuenta).First(&administrativo).Error; err != nil {
+		if err := ur.db.Model(&entity.Administrativo{}).Preload("Acceso").Preload("Area").Where("usuario_num_cuenta = ?", NumCuenta).First(&administrativo).Error; err != nil {
 			return nil, err
 		}
 		return administrativo, nil
 	case "alumno":
 		var alumno *entity.Alumno
-		if err := ur.db.Model(&entity.Alumno{}).Where("usuario_num_cuenta = ?", NumCuenta).First(&alumno).Error; err != nil {
+		if err := ur.db.Model(&entity.Alumno{}).Preload("Licenciatura").Where("usuario_num_cuenta = ?", NumCuenta).First(&alumno).Error; err != nil {
 			return nil, err
 		}
 		return alumno, nil
@@ -115,11 +115,29 @@ func (ur *UsuarioRespository) FindUsuarioAll(NumCuenta int) (*entity.Usuario, er
 	return usuario, nil
 }
 
+func (ur *UsuarioRespository) AllLicenciaturas() (*[]entity.Licenciatura, error) {
+	var licenciaturas *[]entity.Licenciatura
+	if err := ur.db.Model(&entity.Licenciatura{}).Find(&licenciaturas).Error; err != nil {
+		return nil, err
+	}
+	return licenciaturas, nil
+}
+
+func (ur *UsuarioRespository) AllAreas() (*[]entity.Area, error) {
+	var areas *[]entity.Area
+	if err := ur.db.Model(&entity.Area{}).Find(&areas).Error; err != nil {
+		return nil, err
+	}
+	return areas, nil
+}
+
 func (ur *UsuarioRespository) MigrateDataModels() {
 	ur.db.AutoMigrate(
 		&entity.Usuario{},
 		&entity.Administrativo{},
+		&entity.Area{},
 		&entity.Alumno{},
+		&entity.Licenciatura{},
 		&entity.Acceso{},
 	)
 }

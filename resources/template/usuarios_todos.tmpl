@@ -156,7 +156,13 @@
 
 <div class="input-group">
 	<label for="area" class="input-group-text">Area</label>
-	<input type="text" class="form-control" name="area" value="{{ .Area }}">
+	<select name="area" id="area" class="form-select">
+		<option value="0">-- Seleccione una --</option>
+		{{ $id := .Datos.Area.Id }}
+		{{range .List}}
+			<option value="{{ .Id }}" {{ if eq .Id $id}}selected{{ end }}>{{ .Nombre }}</option>
+		{{ end }}
+	</select>
 </div>
 
 <div class="form-check my-3">
@@ -192,7 +198,13 @@
 
 <div class="input-group">
 	<label for="licenciatura" class="input-group-text">Licenciatura</label>
-	<input type="text" class="form-control" name="licenciatura" value="{{ .Licenciatura }}">
+	<select name="licenciatura" id="licenciatura" class="form-select">
+		<option value="">-- Seleccione una --</option>
+		{{ $id := .Datos.Licenciatura.Id }}
+		{{ range .List }}
+			<option value="{{ .Id }}" {{ if eq .Id $id }}selected{{ end }}>{{ .Nombre }}</option>
+		{{ end }}
+	</select>
 </div>
 
 {{ end }}

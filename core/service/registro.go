@@ -39,10 +39,10 @@ func (rs *RegistroService) All(params *url.Values) (*[]entity.Registro, *config.
 	}, nil
 }
 
-func (rs *RegistroService) AllLicenciaturas() (*[]string, error) {
+func (rs *RegistroService) AllLicenciaturas() (*[]entity.Licenciatura, error) {
 	return rs.repository.AllLicenciaturas()
 }
 
-func (rs *RegistroService) AllAreas() (*[]string, error) {
+func (rs *RegistroService) AllAreas() (*[]entity.Area, error) {
 	return rs.repository.AllAreas()
 }

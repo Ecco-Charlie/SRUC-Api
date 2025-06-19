@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"soft.exe/sruc/config"
@@ -48,7 +47,6 @@ func RestAuthSessionKeyMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		jwt := r.Header.Get("Authorization")
 		err := pkg.RestValidateJwt(&jwt)
 		if err != nil {
-			fmt.Println("err")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}

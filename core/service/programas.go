@@ -50,3 +50,11 @@ func (ps *ProgramasService) AgregarPrograma(params *url.Values) error {
 func (ps *ProgramasService) ElimnarPrograma(id string) error {
 	return ps.repository.Eliminar(&id)
 }
+
+func (ps *ProgramasService) AllUnix() (*[]entity.Programa, error) {
+	return ps.repository.AllUnix()
+}
+
+func (ps *ProgramasService) AllWindows() (*[]entity.Programa, error) {
+	return ps.repository.AllWindows()
+}

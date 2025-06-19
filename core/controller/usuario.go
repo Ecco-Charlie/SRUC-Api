@@ -64,23 +64,38 @@ func (uc *UsuarioController) apiExtraParams(w http.ResponseWriter, r *http.Reque
 	var p string
 	var uextra any
 	var err error
+	var list any
+
 	rol := r.PostFormValue("rol")
 	uextra, err = uc.service.FindExtraData(&rol, r.PostFormValue("num_cuenta"))
+
 	if err != nil {
 		uextra = &map[string]any{
-			"Area":         "",
-			"Licenciatura": "",
+			"area":         "",
+			"licenciatura": "",
 		}
 	}
+
 	switch rol {
 	case "administrativo":
 		p = "ud_adm"
+		list, err = uc.service.AllAreas()
 	case "alumno":
 		p = "ud_alu"
+		list, err = uc.service.AllLicenciaturas()
 	default:
 		p = ""
 	}
-	return p, uextra
+	if err != nil {
+		uextra = &map[string]any{
+			"area":         "",
+			"licenciatura": "",
+		}
+	}
+	return p, map[string]any{
+		"Datos": uextra,
+		"List":  list,
+	}
 }
 
 func (uc *UsuarioController) apiEditar(w http.ResponseWriter, r *http.Request) (string, any) {
@@ -101,10 +116,10 @@ func (uc *UsuarioController) apiEliminar(w http.ResponseWriter, r *http.Request)
 func (uc *UsuarioController) apiFindUsuario(w http.ResponseWriter, r *http.Request) {
 	u, err := uc.service.FindUsuarioAll(r.URL.Path)
 	if err != nil {
-		pkg.NotFound(w)
+		pkg.NotFound(w, "el usuario")
 		return
 	}
-	pkg.Ok(w, u)
+	pkg.RestOk(w, u)
 }
 
 func (uc *UsuarioController) RegisterEndpoints(router *config.Router) {
