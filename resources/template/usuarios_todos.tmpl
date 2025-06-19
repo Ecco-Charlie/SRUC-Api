@@ -161,7 +161,7 @@
 
 <div class="form-check my-3">
 	<label for="ha" class="form-check-label">Tiene acceso?</label>
-	<input type="checkbox" class="form-check-input" id="ha" name="ha" onchange="checkHasPasswd()" {{ if .Acceso }}checked{{ end }}>
+	<input type="checkbox" class="form-check-input" id="ha" name="ha" onchange="checkHasPasswd()" {{ if .Datos.Acceso }}checked{{ end }}>
 </div>
 
 <div class="input-group" id="pvi">
